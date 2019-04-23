@@ -1,3 +1,6 @@
+// Copyright 2019 LinkinStar
+// license that can be found in the LICENSE file.
+
 package gu
 
 import (
