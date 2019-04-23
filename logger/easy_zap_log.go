@@ -31,6 +31,9 @@ func InitEasyZapDefault(projectName string) {
 // rotationTime : how long a new log file will be generated;
 // projectName : outermost catalogue of your project;
 func InitEasyZap(projectName, logPath string, maxAge, rotationTime time.Duration) {
+	if len(projectName) != 0 {
+		yourProjectName = projectName
+	}
 	if err := gu.CreateDirIfNotExist(logPath); err != nil {
 		panic(err)
 	}
