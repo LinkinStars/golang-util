@@ -9,7 +9,6 @@ import (
 	"strings"
 	"time"
 
-	"github.com/LinkinStars/golang-util/dir"
 	"github.com/lestrrat-go/file-rotatelogs"
 	"go.uber.org/zap"
 	"go.uber.org/zap/zapcore"
@@ -34,7 +33,7 @@ func InitEasyZap(projectName, logPath string, maxAge, rotationTime time.Duration
 	if len(projectName) != 0 {
 		yourProjectName = projectName
 	}
-	if err := gu.CreateDirIfNotExist(logPath); err != nil {
+	if err := CreateDirIfNotExist(logPath); err != nil {
 		panic(err)
 	}
 	logPath = path.Join(logPath, projectName)
