@@ -70,7 +70,7 @@ func InitEasyZap(projectName, logPath string, maxAge, rotationTime time.Duration
 	consoleDebugging := zapcore.Lock(os.Stdout)
 	consoleEncoderConfig := zap.NewDevelopmentEncoderConfig()
 	consoleEncoderConfig.EncodeLevel = zapcore.CapitalColorLevelEncoder
-	consoleEncoderConfig.EncodeTime = zapcore.ISO8601TimeEncoder
+	consoleEncoderConfig.EncodeTime = timeEncoder
 	consoleEncoderConfig.EncodeCaller = customCallerEncoder
 	consoleEncoder := zapcore.NewConsoleEncoder(consoleEncoderConfig)
 
@@ -78,7 +78,8 @@ func InitEasyZap(projectName, logPath string, maxAge, rotationTime time.Duration
 	errorCore := zapcore.AddSync(errWriter)
 	infoCore := zapcore.AddSync(infoWriter)
 	fileEncodeConfig := zap.NewProductionEncoderConfig()
-	fileEncodeConfig.EncodeTime = zapcore.ISO8601TimeEncoder
+	fileEncodeConfig.EncodeTime = timeEncoder
+	fileEncodeConfig.EncodeCaller = customCallerEncoder
 	fileEncoder := zapcore.NewJSONEncoder(fileEncodeConfig)
 
 	core := zapcore.NewTee(
@@ -89,11 +90,19 @@ func InitEasyZap(projectName, logPath string, maxAge, rotationTime time.Duration
 
 	// show line number
 	caller := zap.AddCaller()
+	// you can set caller skip to skip some stack logs. mind that add it to zap.New option
+	// callerSkip := zap.AddCallerSkip(1)
+
 	development := zap.Development()
 	logger := zap.New(core, caller, development)
 
 	// replace global logger
 	zap.ReplaceGlobals(logger)
+
+	// redirect std log to zap log and log level is error
+	if _, err := zap.RedirectStdLogAt(logger, zapcore.ErrorLevel); err != nil {
+		panic(err)
+	}
 }
 
 // custom caller to make the log can output the full path from "src"
@@ -106,4 +115,9 @@ func customCallerEncoder(caller zapcore.EntryCaller, enc zapcore.PrimitiveArrayE
 		index = index + len(yourProjectName) + 1
 		enc.AppendString(str[index:])
 	}
+}
+
+// Formatting log time
+func timeEncoder(t time.Time, enc zapcore.PrimitiveArrayEncoder) {
+	enc.AppendString(t.Format("2006-01-02 15:04:05.000"))
 }
