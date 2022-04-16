@@ -7,7 +7,7 @@ import (
 	"os"
 )
 
-// create dir recursion
+// CreateDirIfNotExist create dir recursion
 func CreateDirIfNotExist(dir string) error {
 	if CheckPathIfNotExist(dir) {
 		return nil
@@ -15,7 +15,7 @@ func CreateDirIfNotExist(dir string) error {
 	return os.MkdirAll(dir, os.ModePerm)
 }
 
-// if file exist return true
+// CheckPathIfNotExist if file exist return true
 func CheckPathIfNotExist(path string) bool {
 	_, err := os.Stat(path)
 	if os.IsNotExist(err) {

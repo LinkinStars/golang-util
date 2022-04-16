@@ -5,7 +5,7 @@ import (
 	"encoding/hex"
 )
 
-// return the str's md5
+// ToMD5 return the str's md5
 func ToMD5(str string) string {
 	h := md5.New()
 	h.Write([]byte(str))

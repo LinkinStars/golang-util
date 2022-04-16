@@ -10,7 +10,7 @@ import (
 	"time"
 )
 
-// generate random number string
+// GenerateRandomNumber generate random number string
 func GenerateRandomNumber(maxLength int) string {
 	rand.Seed(time.Now().UnixNano())
 
